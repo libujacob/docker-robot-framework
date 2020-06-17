@@ -3,7 +3,7 @@
 
 ## Running the PLUGTEST robot scripts
 
-Build the continer
+(Optional) Build the continer if you made any moditications
 
 	docker build -t libujacob/plugtest-robot-framework .
 
