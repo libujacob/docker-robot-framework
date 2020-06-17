@@ -9,6 +9,9 @@ ENV ROBOT_REPORTS_DIR /opt/robotframework/reports
 # Set the tests directory environment variable
 ENV ROBOT_TESTS_DIR /opt/robotframework/tests
 
+# Set test suit path
+ENV ROBOT_TESTS_SUITE .
+
 # Set the working directory environment variable
 ENV ROBOT_WORK_DIR /opt/robotframework/temp
 
@@ -40,11 +43,6 @@ ENV ROBOT_FRAMEWORK_VERSION 3.1.2
 ENV SELENIUM_LIBRARY_VERSION 4.3.0
 ENV SSH_LIBRARY_VERSION 3.4.0
 ENV XVFB_VERSION 1.20
-
-# Prepare binaries to be executed
-COPY bin/chromedriver.sh /opt/robotframework/bin/chromedriver
-COPY bin/chromium-browser.sh /opt/robotframework/bin/chromium-browser
-COPY bin/run-tests-in-virtual-screen.sh /opt/robotframework/bin/
 
 # Install system dependencies
 RUN apk update \
@@ -80,6 +78,10 @@ RUN apk update \
     robotframework-requests==$REQUESTS_VERSION \
     robotframework-seleniumlibrary==$SELENIUM_LIBRARY_VERSION \
     robotframework-sshlibrary==$SSH_LIBRARY_VERSION \
+    RESTinstance==1.0.0rc4 \
+    robotframework-dependencylibrary==1.0.0.post1 \
+    robotframework-jsonlibrary==0.3 \
+    robotframework-jsonschemalibrary==1.0 \
     PyYAML \
 
 # Download the glibc package for Alpine Linux from its GitHub repository
@@ -101,6 +103,11 @@ RUN apk update \
 
   && apk del --no-cache --update-cache .build-deps
 
+# Prepare binaries to be executed
+COPY bin/chromedriver.sh /opt/robotframework/bin/chromedriver
+COPY bin/chromium-browser.sh /opt/robotframework/bin/chromium-browser
+COPY bin/run-tests-in-virtual-screen.sh /opt/robotframework/bin/
+
 # Create the default report and work folders with the default user to avoid runtime issues
 # These folders are writeable by anyone, to ensure the user can be changed on the command line.
 RUN mkdir -p ${ROBOT_REPORTS_DIR} \
@@ -112,6 +119,10 @@ RUN mkdir -p ${ROBOT_REPORTS_DIR} \
 # Allow any user to write logs
 RUN chmod ugo+w /var/log \
   && chown ${ROBOT_UID}:${ROBOT_GID} /var/log
+
+RUN apk --no-cache add tzdata
+ENV TZ UTC
+
 
 # Update system path
 ENV PATH=/opt/robotframework/bin:/opt/robotframework/drivers:$PATH

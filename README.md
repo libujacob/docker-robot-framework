@@ -1,4 +1,27 @@
-# Robot Framework in Docker Alpine, with Firefox and Chrome
+# Robot Framework in Docker Alpine, customized for ETSI
+
+
+## Running the PLUGTEST robot scripts
+
+Build the continer
+
+	docker build -t libujacob/plugtest-robot-framework .
+
+Run a test suite
+
+    docker run --shm-size=1g -e BROWSER=chrome -e ROBOT_TESTS_SUITE=mep-robot-test/SRV/XXXXX \
+      -e ROBOT_OPTIONS="--loglevel DEBUG" \
+      -v $(pwd)/robot-script:/opt/robotframework/tests:Z \
+      -v $(pwd)/robot-report:/opt/robotframework/reports:Z \
+      libujacob/plugtest-robot-framework:latest
+
+Run a single test case
+
+    docker run --shm-size=1g -e BROWSER=chrome -e ROBOT_TESTS_SUITE=mep-robot-test/SRV/XXXXX \
+      -e ROBOT_OPTIONS="-t TC_MEC_SRV_XXXXXX_001_OK" \
+      -v $(pwd)/robot-script:/opt/robotframework/tests:Z \
+      -v $(pwd)/robot-report:/opt/robotframework/reports:Z \
+      libujacob/plugtest-robot-framework:latest
 
 ## What is it?
 
