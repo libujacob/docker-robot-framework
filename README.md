@@ -1,4 +1,4 @@
-# Robot Framework in Docker Alpine, customized for ETSI
+# Robot Framework in Docker Alpine, customized for PLUGTEST
 
 
 ## Running the PLUGTEST robot scripts
